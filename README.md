@@ -52,7 +52,7 @@ This extension provides to use URL map for synchronisation. The map is a CSV fil
 
 The full URL map for your site you can download from Discus administration panel on https://iconschallenge.disqus.com/admin/discussions/migrate/ ("Start URL mapper" button).
 
-Extension also provides to create URL map automatically. If you set a $autoUpdateMap parameter as true, extension will save every URL for page using Discus to your URL map.
+Extension also provides to update URLs in database automatically. If you set a $autoUpdateMap parameter as true, extension will synchronized every URL for page using Discus to your comments table.
 ```php
 'components' => array(
         'disqusComments' => array(
