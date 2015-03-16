@@ -48,7 +48,7 @@ To synchronise comments from Disqus run the console command
 ```
 You can add it in your crontab to synchronise comments automatically.
 
-This extension provides to use URL map for synchronisation. The map contains list of URLs that have a Disqus comments.
+This extension provides to use URL map for synchronisation. The map is a CSV file contains list of URLs that have a Disqus comments.
 
 The full URL map for your site you can download from Discus administration panel on https://iconschallenge.disqus.com/admin/discussions/migrate/ ("Start URL mapper" button).
 
