@@ -14,7 +14,7 @@ class DisqusCommentsWidget extends CWidget {
     {
         $disqusApiComponent = Yii::app()->disqusComments; /** @var EDisqusComments $disqusApiComponent */
 
-        if($disqusApiComponent->autoUpdateMap) {
+        if($disqusApiComponent->autoUpdateMap && !empty($this->pageUrl)) {
             UrlMap::updateUrlMap($this->pageUrl);
         }
 
