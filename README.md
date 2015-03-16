@@ -4,7 +4,7 @@ Provides to use Disqus comments widget and synchronise comments from Disqus to y
 
 ## Installation
 
-Clone project or extract the DisqusComments folder from archive under protected/extensions of your Yii application.
+Clone or extract the DisqusComments folder from archive under protected/extensions of your Yii application.
 
 ## Configuration
 Extension need to be added in your application and console config to components array:
