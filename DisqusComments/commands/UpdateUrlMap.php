@@ -10,7 +10,7 @@ class UpdateUrlMap extends CConsoleCommand
     public function actionIndex()
     {
         $startAll = microtime(true);
-
+        Yii::app()->disqusComments;
         $pageUrlArray = UrlMap::getUrlArrayFromMap();
 
         foreach($pageUrlArray as $url)
