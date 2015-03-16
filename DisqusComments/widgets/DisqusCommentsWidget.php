@@ -8,7 +8,7 @@
 class DisqusCommentsWidget extends CWidget {
 
     /* Current website page URL */
-    public $pageUrl;
+    public $pageUrl = '';
 
     public function run()
     {
