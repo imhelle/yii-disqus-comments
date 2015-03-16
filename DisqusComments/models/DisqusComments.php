@@ -27,7 +27,8 @@ class DisqusComments extends CActiveRecord
 	{
 		return array(
 			array('create_time, update_time', 'numerical', 'integerOnly'=>true),
-			array('page_url, comments_block', 'required'),
+			array('page_url, comments_block', 'required', 'on' => 'syncComments'),
+			array('page_url', 'required', 'on' => 'updateUrls'),
 			array('id, page_url, comments_block, create_time, update_time', 'safe', 'on'=>'search'),
 		);
 	}

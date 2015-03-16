@@ -14,15 +14,23 @@ class DisqusCommentsWidget extends CWidget {
     {
         $disqusApiComponent = Yii::app()->disqusComments; /** @var EDisqusComments $disqusApiComponent */
 
-        if($disqusApiComponent->autoUpdateMap && !empty($this->pageUrl)) {
-            UrlMap::updateUrlMap($this->pageUrl);
-        }
-
         $disqusComments = DisqusComments::model()->findByAttributes(array(
             'page_url' => $this->pageUrl
         ));
-
-        $commentsBlock = (isset($disqusComments)) ? $disqusComments->comments_block : '';
+        if(isset($disqusComments))
+        {
+            $commentsBlock = $disqusComments->comments_block;
+        }
+        else
+        {
+            $commentsBlock = '';
+            if($disqusApiComponent->autoUpdateMap && !empty($this->pageUrl))
+            {
+                $disqusComments = new DisqusComments('updateUrls');
+                $disqusComments->page_url = $this->pageUrl;
+                $disqusComments->save();
+            }
+        }
 
         $this->render('disqusCommentsWidget', array(
             'commentsBlock' => $commentsBlock,

@@ -12,27 +12,21 @@ class UpdateDisqusComments extends CConsoleCommand
         $startAll = microtime(true);
         $disqusApiComponent = Yii::app()->disqusComments; /** @var EDisqusComments $disqusApiComponent */
 
-        $pageUrlArray = UrlMap::getUrlArrayFromMap();
+        $commentsPages = DisqusComments::model()->findAll();
 
-        foreach($pageUrlArray as $url)
+        foreach($commentsPages as $commentsPage)
         {
             $start = microtime(true);
 
-            $commentsFromApi = $disqusApiComponent->loadCommentsByUrl($url);
+            $commentsPage->setScenario('syncComments');
+            $commentsFromApi = $disqusApiComponent->loadCommentsByUrl($commentsPage->page_url);
             if(is_array($commentsFromApi) && !empty($commentsFromApi))
             {
                 $commentsHTML = EDisqusComments::createCommentsHTML($commentsFromApi);
-                $disqusComments = DisqusComments::model()->findByAttributes(array('page_url' => $url));
-
-                if(!isset($disqusComments))
-                {
-                    $disqusComments = new DisqusComments();
-                    $disqusComments->page_url = $url;
-                }
-                $disqusComments->comments_block = $commentsHTML;
-                $disqusComments->save();
+                $commentsPage->comments_block = $commentsHTML;
+                $commentsPage->save();
             }
-            echo 'generated for ' . $url . ' in ';
+            echo 'generated for ' . $commentsPage->page_url . ' in ';
             echo microtime(true) - $start . " seconds. \n";
         }
         echo 'generated ALL in ';
