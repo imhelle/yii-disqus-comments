@@ -14,8 +14,8 @@ class  GetCommentsAction extends CAction
             if(isset($_POST['page_url']))
             {
                 $url = $_POST['page_url'];
-                $discusComponent = Yii::app()->discusComments; /** @var EDisqusComments $discusComponent */
-                $comments = DisqusComments::model()->cache($discusComponent->cacheDuration)->findByAttributes(array(
+                $disqusComponent = Yii::app()->disqusComments; /** @var EDisqusComments $disqusComponent */
+                $comments = DisqusComments::model()->cache($disqusComponent->cacheDuration)->findByAttributes(array(
                     'page_url' => $url
                 ));
                 echo EDisqusComments::createCommentsJSON($comments->comments_block);

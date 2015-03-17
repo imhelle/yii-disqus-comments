@@ -7,15 +7,15 @@
 class UpdateUrlMap extends CConsoleCommand
 {
 
-    public function actionIndex()
+    public function actionIndex($filePath)
     {
         $startAll = microtime(true);
-        $discusComponent = Yii::app()->discusComments; /** @var EDisqusComments $discusComponent */
-        $pageUrlArray = UrlMap::getUrlArrayFromMap();
+        $disqusComponent = Yii::app()->disqusComments; /** @var EDisqusComments $disqusComponent */
+        $pageUrlArray = UrlMap::getUrlArrayFromMap($filePath);
 
         foreach($pageUrlArray as $url)
         {
-            $disqusComments = DisqusComments::model($discusComponent->cacheDuration)->findByAttributes(array(
+            $disqusComments = DisqusComments::model()->cache($disqusComponent->cacheDuration)->findByAttributes(array(
                 'page_url' => $url
             ));
 

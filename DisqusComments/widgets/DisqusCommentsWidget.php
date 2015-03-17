@@ -12,12 +12,12 @@ class DisqusCommentsWidget extends CWidget {
 
     public function run()
     {
-        $discusComponent = Yii::app()->disqusComments; /** @var EDisqusComments $discusComponent */
+        $disqusComponent = Yii::app()->disqusComments; /** @var EDisqusComments $disqusComponent */
 
-        $commentsBlock = $discusComponent->getCache('commentBlock_' . md5($this->pageUrl));
+        $commentsBlock = $disqusComponent->getCache('commentBlock_' . md5($this->pageUrl));
         if($commentsBlock === false)
         {
-            $disqusComments = DisqusComments::model()->cache($discusComponent->cacheDuration)->findByAttributes(array(
+            $disqusComments = DisqusComments::model()->cache($disqusComponent->cacheDuration)->findByAttributes(array(
                 'page_url' => $this->pageUrl
             ));
             if(isset($disqusComments))
@@ -28,20 +28,20 @@ class DisqusCommentsWidget extends CWidget {
             else
             {
                 $commentsBlock = '';
-                if($discusComponent->autoUpdateMap && !empty($this->pageUrl))
+                if($disqusComponent->autoUpdateMap && !empty($this->pageUrl))
                 {
                     $disqusComments = new DisqusComments('updateUrls');
                     $disqusComments->page_url = $this->pageUrl;
                     $disqusComments->save();
                 }
             }
-            $discusComponent->setCache('commentBlock_' . md5($this->pageUrl), $commentsBlock);
+            $disqusComponent->setCache('commentBlock_' . md5($this->pageUrl), $commentsBlock);
         }
 
         $this->render('disqusCommentsWidget', array(
             'commentsBlock' => $commentsBlock,
-            'apiKey' => $discusComponent->apiKey,
-            'shortName' => $discusComponent->shortName
+            'apiKey' => $disqusComponent->apiKey,
+            'shortName' => $disqusComponent->shortName
         ));
     }
 }

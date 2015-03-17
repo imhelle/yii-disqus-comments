@@ -9,17 +9,14 @@ class UrlMap {
     /* It is recommended to provide max string length to fgetcsv for improve executing speed http://php.net/manual/ru/function.fgetcsv.php */
     const URL_MAX_LENGTH = 1000;
 
-    /* Name of your map stored in '/data' folder */
-    public static $urlMapFileName = 'urlMap.csv';
-
     /**
      * Getting URLs from CSV map
+     * @param
      * @return array
      */
-    public static function getUrlArrayFromMap()
+    public static function getUrlArrayFromMap($filePath)
     {
         $urlArray = array();
-        $filePath = self::getFilePath();
         if(file_exists($filePath))
         {
             $file = fopen($filePath, 'r');
@@ -32,34 +29,11 @@ class UrlMap {
                 fclose($file);
             }
         }
+        else
+        {
+            echo 'Can not read the file ' . $filePath;
+        }
         return $urlArray;
     }
 
-    /**
-     * Adding current url to map if it isn't existing
-     * @param string $url
-     */
-    public static function updateUrlMap($url)
-    {
-        $urlArray = self::getUrlArrayFromMap();
-        if(array_search($url, $urlArray) === false)
-        {
-            $urlArray[] = $url;
-            $filePath = self::getFilePath();
-            $file = fopen($filePath, 'a');
-            if(is_resource($file))
-            {
-                fputcsv($file, array($url));
-            }
-            fclose($file);
-        }
-
-    }
-
-    /**
-     * @return string
-     */
-    public static function getFilePath() {
-        return dirname(__FILE__) . DIRECTORY_SEPARATOR . 'data' . DIRECTORY_SEPARATOR . self::$urlMapFileName;
-    }
 }
