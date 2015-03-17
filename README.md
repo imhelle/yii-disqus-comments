@@ -37,6 +37,17 @@ Apply the migration to create table for storing synchronised comments:
 ```
 php yiic.php migrate --migrationPath=ext.DisqusComments.migrations
 ```
+Extension provides to use cache for widget.
+You can set your Id of cache component you use. 
+```php
+'components' => array(
+        'disqusComments' => array(
+            'class' => 'ext.DisqusComments.components.EDisqusComments',
+            'apiKey' => 'YOUR_API_KEY',
+            'shortName' => 'YOUR_SHORT_NAME',
+            'cacheId' = 'cache' // you can set it here
+        ),
+```
 
 ## Base Usage
 Add this widget to pages that you want add comments
