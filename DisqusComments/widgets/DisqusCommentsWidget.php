@@ -12,30 +12,36 @@ class DisqusCommentsWidget extends CWidget {
 
     public function run()
     {
-        $disqusApiComponent = Yii::app()->disqusComments; /** @var EDisqusComments $disqusApiComponent */
+        $discusComponent = Yii::app()->disqusComments; /** @var EDisqusComments $discusComponent */
 
-        $disqusComments = DisqusComments::model()->findByAttributes(array(
-            'page_url' => $this->pageUrl
-        ));
-        if(isset($disqusComments))
+        $commentsBlock = $discusComponent->getCache('commentBlock_' . md5($this->pageUrl));
+        if($commentsBlock === false)
         {
-            $commentsBlock = $disqusComments->comments_block;
-        }
-        else
-        {
-            $commentsBlock = '';
-            if($disqusApiComponent->autoUpdateMap && !empty($this->pageUrl))
+            $disqusComments = DisqusComments::model()->cache($discusComponent->cacheDuration)->findByAttributes(array(
+                'page_url' => $this->pageUrl
+            ));
+            if(isset($disqusComments))
             {
-                $disqusComments = new DisqusComments('updateUrls');
-                $disqusComments->page_url = $this->pageUrl;
-                $disqusComments->save();
+                $comments = json_decode($disqusComments->comments_block);
+                $commentsBlock = EDisqusComments::createCommentsHTML($comments);
             }
+            else
+            {
+                $commentsBlock = '';
+                if($discusComponent->autoUpdateMap && !empty($this->pageUrl))
+                {
+                    $disqusComments = new DisqusComments('updateUrls');
+                    $disqusComments->page_url = $this->pageUrl;
+                    $disqusComments->save();
+                }
+            }
+            $discusComponent->setCache('commentBlock_' . md5($this->pageUrl), $commentsBlock);
         }
 
         $this->render('disqusCommentsWidget', array(
             'commentsBlock' => $commentsBlock,
-            'apiKey' => $disqusApiComponent->apiKey,
-            'shortName' => $disqusApiComponent->shortName
+            'apiKey' => $discusComponent->apiKey,
+            'shortName' => $discusComponent->shortName
         ));
     }
 }

@@ -10,7 +10,7 @@ class UpdateDisqusComments extends CConsoleCommand
     public function actionIndex()
     {
         $startAll = microtime(true);
-        $disqusApiComponent = Yii::app()->disqusComments; /** @var EDisqusComments $disqusApiComponent */
+        $discusComponent = Yii::app()->disqusComments; /** @var EDisqusComments $discusComponent */
 
         $commentsPages = DisqusComments::model()->findAll();
 
@@ -19,11 +19,12 @@ class UpdateDisqusComments extends CConsoleCommand
             $start = microtime(true);
 
             $commentsPage->setScenario('syncComments');
-            $commentsFromApi = $disqusApiComponent->loadCommentsByUrl($commentsPage->page_url);
+            $commentsFromApi = $discusComponent->loadCommentsByUrl($commentsPage->page_url);
             if(is_array($commentsFromApi) && !empty($commentsFromApi))
             {
-                $commentsHTML = EDisqusComments::createCommentsHTML($commentsFromApi);
-                $commentsPage->comments_block = $commentsHTML;
+                $comments = EDisqusComments::formatComments($commentsFromApi);
+                $commentsHierarchy = EDisqusComments::sortCommentsByHierarchy($comments);
+                $commentsPage->comments_block = json_encode($commentsHierarchy);
                 $commentsPage->save();
             }
             echo 'generated for ' . $commentsPage->page_url . ' in ';
