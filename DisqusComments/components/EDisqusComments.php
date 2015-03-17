@@ -101,7 +101,6 @@ class EDisqusComments extends CApplicationComponent {
      */
     public static function createCommentsHTML($comments)
     {
-        var_dump($comments);
         $commentsHTML = CHtml::openTag('ul');
         foreach($comments as $comment)
         {
