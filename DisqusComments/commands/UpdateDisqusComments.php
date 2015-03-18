@@ -31,7 +31,9 @@ class UpdateDisqusComments extends CConsoleCommand
             echo microtime(true) - $start . " seconds. \n";
         }
         echo 'generated ALL in ';
-        echo microtime(true) - $startAll . " seconds. \n";
+        $finishAll = microtime(true);
+        \Yii::app()->setGlobalState('DisqusComments', $finishAll);
+        echo $finishAll - $startAll . " seconds. \n";
     }
 
 }

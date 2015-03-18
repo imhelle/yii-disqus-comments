@@ -17,7 +17,9 @@ class DisqusCommentsWidget extends CWidget {
         $commentsBlock = $disqusComponent->getCache('commentBlock_' . md5($this->pageUrl));
         if($commentsBlock === false)
         {
-            $disqusComments = DisqusComments::model()->cache($disqusComponent->cacheDuration)->findByAttributes(array(
+            $duration = $disqusComponent->queryCacheDuration;
+            $dependency = new \CGlobalStateCacheDependency('DisqusComments');
+            $disqusComments = DisqusComments::model()->cache($duration, $dependency)->findByAttributes(array(
                 'page_url' => $this->pageUrl
             ));
             if(isset($disqusComments))
@@ -30,9 +32,7 @@ class DisqusCommentsWidget extends CWidget {
                 $commentsBlock = '';
                 if($disqusComponent->autoUpdateMap && !empty($this->pageUrl))
                 {
-                    $disqusComments = new DisqusComments('updateUrls');
-                    $disqusComments->page_url = $this->pageUrl;
-                    $disqusComments->save();
+                    DisqusComments::saveNewUrl($this->pageUrl);
                 }
             }
             $disqusComponent->setCache('commentBlock_' . md5($this->pageUrl), $commentsBlock);

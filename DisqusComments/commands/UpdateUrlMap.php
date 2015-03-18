@@ -10,12 +10,11 @@ class UpdateUrlMap extends CConsoleCommand
     public function actionIndex($filePath)
     {
         $startAll = microtime(true);
-        $disqusComponent = Yii::app()->disqusComments; /** @var EDisqusComments $disqusComponent */
         $pageUrlArray = UrlMap::getUrlArrayFromMap($filePath);
 
         foreach($pageUrlArray as $url)
         {
-            $disqusComments = DisqusComments::model()->cache($disqusComponent->cacheDuration)->findByAttributes(array(
+            $disqusComments = DisqusComments::model()->findByAttributes(array(
                 'page_url' => $url
             ));
 

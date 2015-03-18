@@ -27,6 +27,9 @@ class EDisqusComments extends CApplicationComponent {
     /* Duration of caching in seconds */
     public $cacheDuration = 3600;
 
+    /* Duration of query caching in seconds */
+    public $queryCacheDuration = 300;
+
     public function init()
     {
         Yii::import('ext.DisqusComments.models.*');
@@ -73,7 +76,8 @@ class EDisqusComments extends CApplicationComponent {
      * @param string $id
      * @return bool|mixed
      */
-    public function getCache($id) {
+    public function getCache($id)
+    {
         $value = false;
         if($this->cacheId !== false && ($cache = Yii::app()->getComponent($this->cacheId)) !== null)
         {   /** @var CCache $cache */
@@ -87,10 +91,12 @@ class EDisqusComments extends CApplicationComponent {
      * @param string $id
      * @param mixed $value
      */
-    public function setCache($id, $value) {
+    public function setCache($id, $value)
+    {
         if($this->cacheId !== false && ($cache = Yii::app()->getComponent($this->cacheId)) !== null)
         {   /** @var CCache $cache */
-            $cache->set($id, $value);
+            $dependency = new \CGlobalStateCacheDependency('DisqusComments');
+            $cache->set($id, $value, $this->cacheDuration, $dependency);
         }
     }
 
@@ -164,6 +170,10 @@ class EDisqusComments extends CApplicationComponent {
         return $comments;
     }
 
+    /**
+     * @param $date
+     * @return bool|string
+     */
     public static function formatDate($date)
     {
         return date_format(date_create($date), 'Y-m-d H:i:s');

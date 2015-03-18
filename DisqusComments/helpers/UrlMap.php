@@ -6,7 +6,8 @@
 
 class UrlMap {
 
-    /* It is recommended to provide max string length to fgetcsv for improve executing speed http://php.net/manual/ru/function.fgetcsv.php */
+    /* It is recommended to provide max string length to fgetcsv for improve executing speed
+    http://php.net/manual/ru/function.fgetcsv.php */
     const URL_MAX_LENGTH = 1000;
 
     /**

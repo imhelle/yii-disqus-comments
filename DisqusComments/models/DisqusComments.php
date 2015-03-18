@@ -84,4 +84,12 @@ class DisqusComments extends CActiveRecord
 	{
 		return parent::model($className);
 	}
+
+    public static function saveNewUrl($url)
+    {
+        $model = new self('updateUrls');
+        $model->page_url = $url;
+        $model->save();
+        \Yii::app()->setGlobalState('DisqusComments', microtime(true));
+    }
 }

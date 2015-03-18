@@ -15,9 +15,15 @@ class  GetCommentsAction extends CAction
             {
                 $url = $_POST['page_url'];
                 $disqusComponent = Yii::app()->disqusComments; /** @var EDisqusComments $disqusComponent */
-                $comments = DisqusComments::model()->cache($disqusComponent->cacheDuration)->findByAttributes(array(
+                $duration = $disqusComponent->queryCacheDuration;
+                $dependency = new \CGlobalStateCacheDependency('DisqusComments');
+                $comments = DisqusComments::model()->cache($duration, $dependency)->findByAttributes(array(
                     'page_url' => $url
                 ));
+                if(!isset($comments))
+                {
+                    DisqusComments::saveNewUrl($url);
+                }
                 echo EDisqusComments::createCommentsJSON($comments->comments_block);
             }
         }
