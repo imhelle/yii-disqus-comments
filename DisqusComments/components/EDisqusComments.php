@@ -30,6 +30,9 @@ class EDisqusComments extends CApplicationComponent {
     /* Duration of query caching in seconds */
     public $queryCacheDuration = 300;
 
+    /* Default interval for update recent comments */
+    public $defaultUpdateInterval = '12h';
+
     public function init()
     {
         Yii::import('ext.DisqusComments.models.*');
@@ -42,7 +45,7 @@ class EDisqusComments extends CApplicationComponent {
      * Getting comments from Disqus API for website page using cursor for results pagination
      * @param string $pageUrl
      * @param string|null $cursor
-     * @return array
+     * @return stdClass[]
      */
     public function loadCommentsByUrl($pageUrl, $cursor = null)
     {
@@ -67,6 +70,45 @@ class EDisqusComments extends CApplicationComponent {
         if($decodedData->cursor->hasNext)
         {
             $result = array_merge($result, $this->loadCommentsByUrl($pageUrl, $decodedData->cursor->next));
+        }
+        return $result;
+    }
+
+    /**
+     * Get from Disqus API the threads having new comments in recent interval
+     * @param string $interval
+     * @param string|null $cursor
+     * @return string[]
+     */
+    public function loadRecentThreads($interval, $cursor = null)
+    {
+        $disqusApiUrl = 'https://disqus.com/api/3.0/threads/listPopular.json';
+        $disqusApiUrl .= '?api_key=' . $this->apiKey;
+        $disqusApiUrl .= '&forum=' . $this->shortName;
+        $disqusApiUrl .= '&limit=' . $this->commentsLimit;
+        $disqusApiUrl .= '&interval=' . $interval;
+        if(isset($cursor))
+        {
+            $disqusApiUrl .= '&cursor=' . $cursor;
+        }
+        $connection = curl_init($disqusApiUrl);
+        curl_setopt($connection, CURLOPT_RETURNTRANSFER, 1);
+        $data = curl_exec($connection);
+        curl_close($connection);
+
+        $decodedData = json_decode($data);
+        $result = array();
+        if(is_array($decodedData->response) && !empty($decodedData->response))
+        {
+            foreach($decodedData->response as $threadFromApi)
+            {
+                $result[] = $threadFromApi->link;
+            }
+        }
+
+        if($decodedData->cursor->hasNext)
+        {
+            $result = array_merge($result, $this->loadRecentThreads($interval, $decodedData->cursor->next));
         }
         return $result;
     }

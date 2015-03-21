@@ -92,4 +92,31 @@ class DisqusComments extends CActiveRecord
         $model->save();
         \Yii::app()->setGlobalState('DisqusComments', microtime(true));
     }
+
+    /**
+     * Returns the the latest update time from comments table
+     * @return int|false
+     */
+    public static function getLastUpdateTime()
+    {
+        $criteria = new CDbCriteria;
+        $criteria->select = 'max(update_time)';
+        $model = self::model();
+        $command = $model->commandBuilder->createFindCommand(self::model()->tableName(), $criteria);
+        return $command->queryScalar();
+    }
+
+    public static function findByUrl($url, $createIfNotExist = false)
+    {
+        $commentsPage = self::model()->findByAttributes(array(
+            'page_url' => $url
+        ));
+        if(!isset($commentsPage) && $createIfNotExist)
+        {
+            $commentsPage = new self('syncComments');
+            $commentsPage->page_url = $url;
+        }
+        return $commentsPage;
+    }
+
 }
