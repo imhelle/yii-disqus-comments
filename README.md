@@ -56,17 +56,26 @@ Add this widget to pages that you want add comments
 ```
 This widget can receive an URL for current website page. It needed for getting synchronised comments from DB.
 
-To synchronise comments from Disqus run the console command
+Extension has console command for synchronisew comments from Disqus.
+
+To synchronise all comments from Disqus (by URLs you have in comments table) run the console command
 ```
- php yiic.php update_disqus_comments
+ php yiic.php update_disqus_comments all
 ```
-You can add it in your crontab to synchronise comments automatically.
+Note: if you have many Disqus threads, execution of this command may take a long time.
+
+To synchronise only the recent coeemts you can run this:
+```
+ php yiic.php update_disqus_comments recent
+```
+This command will get tour last update time and request only the comment threads that was update by tnis time.
+It is recommended to add this command in your crontab to synchronise comments automatically. 
 
 This extension provides to use URL map for synchronisation. The map is a CSV file contains list of URLs that have a Disqus comments.
 
-To update URL map from file, put this file to \helpers\data and run the console command
+To update URL map from file, put this file to directory accessible from your application and run the console command
 ```
- php yiic.php update_url_map
+ php yiic.php update_url_map --filePath='PATH_TO_YOUR_FILE'
 ```
 
 The full URL map for your site you can download from Discus administration panel on https://iconschallenge.disqus.com/admin/discussions/migrate/ ("Start URL mapper" button).
