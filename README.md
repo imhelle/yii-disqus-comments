@@ -1,6 +1,6 @@
 # yii-disqus-comments
 Extension for adding Disqus comments (https://disqus.com) for Yii application.
-Provides to use Disqus comments widget and synchronise comments from Disqus to your database (it can be useful for indexing comments by Google).
+Provides to use Disqus comments widget and synchronize comments from Disqus to your database (it can be useful for indexing comments by Google).
 
 ## Installation
 
@@ -22,7 +22,7 @@ The shortname is a specified name for your site that you will get by registering
 
 The API Key you can receive by registering your application on https://disqus.com/api/applications/, it is required for using Disqus Api
 
-For easy use a synchronisating console commands you can add it to your commandMap in console config:
+For easy use a synchronization console commands you can add it to your commandMap in console config:
 ```php
 'commandMap' => array(
         'update_disqus_comments' => array(
@@ -33,7 +33,7 @@ For easy use a synchronisating console commands you can add it to your commandMa
         ),
     ),
 ```
-Apply the migration to create table for storing synchronised comments:
+Apply the migration to create table for storing synchronized comments:
 ```
 php yiic.php migrate --migrationPath=ext.DisqusComments.migrations
 ```
@@ -56,22 +56,22 @@ Add this widget to pages that you want add comments
 ```
 This widget can receive an URL for current website page. It needed for getting synchronised comments from DB.
 
-Extension has console command for synchronisew comments from Disqus.
+Extension has console command for synchronize comments from Disqus.
 
-To synchronise all comments from Disqus (by URLs you have in comments table) run the console command
+To synchronize all comments from Disqus (by URLs you have in comments table) run the console command
 ```
  php yiic.php update_disqus_comments all
 ```
 Note: if you have many Disqus threads, execution of this command may take a long time.
 
-To synchronise only the recent coeemts you can run this:
+To synchronize only the recent comments you can run this:
 ```
  php yiic.php update_disqus_comments recent
 ```
 This command will get tour last update time and request only the comment threads that was update by tnis time.
-It is recommended to add this command in your crontab to synchronise comments automatically. 
+It is recommended to add this command in your crontab to synchronize comments automatically. 
 
-This extension provides to use URL map for synchronisation. The map is a CSV file contains list of URLs that have a Disqus comments.
+This extension provides to use URL map for synchronization. The map is a CSV file contains list of URLs that have a Disqus comments.
 
 To update URL map from file, put this file to directory accessible from your application and run the console command
 ```
