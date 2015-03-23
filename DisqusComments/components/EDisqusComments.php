@@ -30,9 +30,6 @@ class EDisqusComments extends CApplicationComponent {
     /* Duration of query caching in seconds */
     public $queryCacheDuration = 300;
 
-    /* Default interval for update recent comments */
-    public $defaultUpdateInterval = '12h';
-
     public function init()
     {
         Yii::import('ext.DisqusComments.models.*');
@@ -59,17 +56,44 @@ class EDisqusComments extends CApplicationComponent {
         {
             $disqusApiUrl .= '&cursor=' . $cursor;
         }
-        $connection = curl_init($disqusApiUrl);
-        curl_setopt($connection, CURLOPT_RETURNTRANSFER, 1);
-        $data = curl_exec($connection);
-        curl_close($connection);
-
-        $decodedData = json_decode($data);
+        $decodedData = self::sendRequest($disqusApiUrl);
         $result = $decodedData->response;
 
         if($decodedData->cursor->hasNext)
         {
             $result = array_merge($result, $this->loadCommentsByUrl($pageUrl, $decodedData->cursor->next));
+        }
+        return $result;
+    }
+
+    /**
+     * Get from Disqus API all your thread URLs
+     * @param string|null $cursor
+     * @return string[]
+     */
+    public function loadUrls($cursor = null)
+    {
+        $disqusApiUrl = 'https://disqus.com/api/3.0/threads/list.json';
+        $disqusApiUrl .= '?api_key=' . $this->apiKey;
+        $disqusApiUrl .= '&forum=' . $this->shortName;
+        $disqusApiUrl .= '&limit=' . $this->commentsLimit;
+        if(isset($cursor))
+        {
+            $disqusApiUrl .= '&cursor=' . $cursor;
+        }
+
+        $data = self::sendRequest($disqusApiUrl);
+        $result = array();
+        if(is_array($data->response) && !empty($data->response))
+        {
+            foreach($data->response as $threadFromApi)
+            {
+                $result[] = $threadFromApi->link;
+            }
+        }
+        if($data->cursor->hasNext)
+        {
+            $result = array_merge($result, $this->loadUrls($data->cursor->next));
         }
         return $result;
     }
@@ -91,24 +115,19 @@ class EDisqusComments extends CApplicationComponent {
         {
             $disqusApiUrl .= '&cursor=' . $cursor;
         }
-        $connection = curl_init($disqusApiUrl);
-        curl_setopt($connection, CURLOPT_RETURNTRANSFER, 1);
-        $data = curl_exec($connection);
-        curl_close($connection);
-
-        $decodedData = json_decode($data);
+        $data = self::sendRequest($disqusApiUrl);
         $result = array();
-        if(is_array($decodedData->response) && !empty($decodedData->response))
+        if(is_array($data->response) && !empty($data->response))
         {
-            foreach($decodedData->response as $threadFromApi)
+            foreach($data->response as $threadFromApi)
             {
                 $result[] = $threadFromApi->link;
             }
         }
 
-        if($decodedData->cursor->hasNext)
+        if($data->cursor->hasNext)
         {
-            $result = array_merge($result, $this->loadRecentThreads($interval, $decodedData->cursor->next));
+            $result = array_merge($result, $this->loadRecentThreads($interval, $data->cursor->next));
         }
         return $result;
     }
@@ -219,6 +238,21 @@ class EDisqusComments extends CApplicationComponent {
     public static function formatDate($date)
     {
         return date_format(date_create($date), 'Y-m-d H:i:s');
+    }
+
+    /**
+     * Send CUrl request and return decoded data
+     * @param string $url
+     * @return stdClass
+     */
+    protected static function sendRequest($url)
+    {
+        $connection = curl_init($url);
+        curl_setopt($connection, CURLOPT_RETURNTRANSFER, 1);
+        $data = curl_exec($connection);
+        curl_close($connection);
+
+        return json_decode($data);
     }
 
 }

@@ -41,7 +41,7 @@ class DisqusComments extends CActiveRecord
 		return array(
 			'id' => 'ID',
 			'page_url' => 'Url for page using Disqus comments',
-			'comments_block' => 'Comments block HTML',
+			'comments_block' => 'Comments block JSON',
 			'create_time' => 'Time created',
 			'update_time' => 'Time modified',
 		);
@@ -106,15 +106,19 @@ class DisqusComments extends CActiveRecord
         return $command->queryScalar();
     }
 
-    public static function findByUrl($url, $createIfNotExist = false)
+    public static function findByUrl($url, $createIfNotExist = false, $scenario = null)
     {
         $commentsPage = self::model()->findByAttributes(array(
             'page_url' => $url
         ));
         if(!isset($commentsPage) && $createIfNotExist)
         {
-            $commentsPage = new self('syncComments');
+            $commentsPage = new self();
             $commentsPage->page_url = $url;
+        }
+        if(isset($scenario))
+        {
+            $commentsPage->scenario = $scenario;
         }
         return $commentsPage;
     }

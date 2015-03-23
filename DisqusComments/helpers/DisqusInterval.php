@@ -16,7 +16,7 @@ class DisqusInterval {
     const INTERVAL_MONTH = '30d';
     const INTERVAL_THREE_MONTHS = '90d';
 
-    /*  */
+    /* Intervals from Disqus API in seconds */
     public static $intervalsInSeconds = array(
         self::INTERVAL_HOUR => 3600,
         self::INTERVAL_SIX_HOURS => 21600,

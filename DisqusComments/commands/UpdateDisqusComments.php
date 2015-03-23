@@ -6,6 +6,7 @@
  */
 class UpdateDisqusComments extends CConsoleCommand
 {
+    /* Update comments for all your pages in comments table */
     public function actionAll()
     {
         $startAll = microtime(true);
@@ -30,12 +31,13 @@ class UpdateDisqusComments extends CConsoleCommand
             echo 'generated for ' . $commentsPage->page_url . ' in ';
             echo microtime(true) - $start . " seconds. \n";
         }
-        echo 'generated ALL in ';
         $finishAll = microtime(true);
         \Yii::app()->setGlobalState('DisqusComments', $finishAll);
+        echo 'generated ALL in ';
         echo $finishAll - $startAll . " seconds. \n";
     }
 
+    /* Update the recent changed threads by the period from last update */
     public function actionRecent()
     {
         $startAll = microtime(true);
@@ -51,7 +53,7 @@ class UpdateDisqusComments extends CConsoleCommand
             {
                 $start = microtime(true);
 
-                $commentsPage = DisqusComments::findByUrl($url, true);  /* 'true' is for create if not exist */
+                $commentsPage = DisqusComments::findByUrl($url, true, 'syncComments');  /* 'true' is for create if not exist */
                 $commentsFromApi = $discusComponent->loadCommentsByUrl($commentsPage->page_url);
                 if(is_array($commentsFromApi) && !empty($commentsFromApi))
                 {

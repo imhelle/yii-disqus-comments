@@ -13,7 +13,7 @@ class m150315_105154_disqus_comments extends CDbMigration
         ));
 
         $this->createIndex('disqus_comments_page_url', 'disqus_comments', 'page_url', true);
-        $this->createIndex('disqus_comments_update_time', 'disqus_comments', 'update_time');
+        $this->createIndex('disqus_comments_update_time', 'disqus_comments', 'update_time', true);
     }
 
     public function safeDown()

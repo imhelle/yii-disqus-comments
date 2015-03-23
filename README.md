@@ -54,7 +54,7 @@ Add this widget to pages that you want add comments
 ```php
 <?php $this->widget('ext.DisqusComments.widgets.DisqusCommentsWidget', array('pageUrl' => $pageUrl)); ?>
 ```
-This widget can receive an URL for current website page. It needed for getting synchronised comments from DB.
+This widget can receive an URL for current website page. It needed for getting synchronized comments from DB.
 
 Extension has console command for synchronize comments from Disqus.
 
@@ -68,19 +68,20 @@ To synchronize only the recent comments you can run this:
 ```
  php yiic.php update_disqus_comments recent
 ```
-This command will get tour last update time and request only the comment threads that was update by tnis time.
+This command will get your last update time and request only the comment threads that was update by this time.
 It is recommended to add this command in your crontab to synchronize comments automatically. 
 
-This extension provides to use URL map for synchronization. The map is a CSV file contains list of URLs that have a Disqus comments.
-
-To update URL map from file, put this file to directory accessible from your application and run the console command
+To get the initial URL map from Disqus API you can run the command 
 ```
- php yiic.php update_url_map --filePath='PATH_TO_YOUR_FILE'
+ php yiic.php update_url_map fromApi
 ```
 
-The full URL map for your site you can download from Discus administration panel on https://iconschallenge.disqus.com/admin/discussions/migrate/ ("Start URL mapper" button).
+Also you can download the map in CSV format from Discus administration panel on https://iconschallenge.disqus.com/admin/discussions/migrate/ ("Start URL mapper" button) and update URLs from it:
+```
+ php yiic.php update_url_map fromCSV --filePath='PATH_TO_YOUR_FILE'
+```
 
-Extension also provides to update URLs in database automatically. If you set a $autoUpdateMap parameter as true, extension will synchronized every URL for page using Discus to your comments table.
+Extension also provides to update URLs in database automatically. If you set a $autoUpdateMap parameter as true, extension will synchronize every URL for page using Discus to your comments table.
 ```php
 'components' => array(
         'disqusComments' => array(
