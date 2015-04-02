@@ -12,78 +12,78 @@
  */
 class DisqusComments extends CActiveRecord
 {
-	/**
-	 * @return string the associated database table name
-	 */
-	public function tableName()
-	{
-		return 'disqus_comments';
-	}
+    /**
+     * @return string the associated database table name
+     */
+    public function tableName()
+    {
+        return 'disqus_comments';
+    }
 
-	/**
-	 * @return array validation rules for model attributes.
-	 */
-	public function rules()
-	{
-		return array(
-			array('create_time, update_time', 'numerical', 'integerOnly'=>true),
-			array('page_url, comments_block', 'required', 'on' => 'syncComments'),
-			array('page_url', 'required', 'on' => 'updateUrls'),
-			array('id, page_url, comments_block, create_time, update_time', 'safe', 'on'=>'search'),
-		);
-	}
+    /**
+     * @return array validation rules for model attributes.
+     */
+    public function rules()
+    {
+        return array(
+            array('create_time, update_time', 'numerical', 'integerOnly' => true),
+            array('page_url, comments_block', 'required', 'on' => 'syncComments'),
+            array('page_url', 'required', 'on' => 'updateUrls'),
+            array('id, page_url, comments_block, create_time, update_time', 'safe', 'on' => 'search'),
+        );
+    }
 
-	/**
-	 * @return array customized attribute labels (name=>label)
-	 */
-	public function attributeLabels()
-	{
-		return array(
-			'id' => 'ID',
-			'page_url' => 'Url for page using Disqus comments',
-			'comments_block' => 'Comments block JSON',
-			'create_time' => 'Time created',
-			'update_time' => 'Time modified',
-		);
-	}
+    /**
+     * @return array customized attribute labels (name=>label)
+     */
+    public function attributeLabels()
+    {
+        return array(
+            'id' => 'ID',
+            'page_url' => 'Url for page using Disqus comments',
+            'comments_block' => 'Comments block JSON',
+            'create_time' => 'Time created',
+            'update_time' => 'Time modified',
+        );
+    }
 
-	/**
-	 * Retrieves a list of models based on the current search/filter conditions.
-	 *
-	 * Typical usecase:
-	 * - Initialize the model fields with values from filter form.
-	 * - Execute this method to get CActiveDataProvider instance which will filter
-	 * models according to data in model fields.
-	 * - Pass data provider to CGridView, CListView or any similar widget.
-	 *
-	 * @return CActiveDataProvider the data provider that can return the models
-	 * based on the search/filter conditions.
-	 */
-	public function search()
-	{
-		$criteria=new CDbCriteria;
+    /**
+     * Retrieves a list of models based on the current search/filter conditions.
+     *
+     * Typical usecase:
+     * - Initialize the model fields with values from filter form.
+     * - Execute this method to get CActiveDataProvider instance which will filter
+     * models according to data in model fields.
+     * - Pass data provider to CGridView, CListView or any similar widget.
+     *
+     * @return CActiveDataProvider the data provider that can return the models
+     * based on the search/filter conditions.
+     */
+    public function search()
+    {
+        $criteria = new CDbCriteria;
 
-		$criteria->compare('id', $this->id);
-		$criteria->compare('page_url', $this->page_url, true);
-		$criteria->compare('comments_block', $this->comments_block, true);
-		$criteria->compare('create_time', $this->create_time);
-		$criteria->compare('update_time', $this->update_time);
+        $criteria->compare('id', $this->id);
+        $criteria->compare('page_url', $this->page_url, true);
+        $criteria->compare('comments_block', $this->comments_block, true);
+        $criteria->compare('create_time', $this->create_time);
+        $criteria->compare('update_time', $this->update_time);
 
-		return new CActiveDataProvider($this, array(
-			'criteria'=>$criteria,
-		));
-	}
+        return new CActiveDataProvider($this, array(
+            'criteria' => $criteria,
+        ));
+    }
 
-	/**
-	 * Returns the static model of the specified AR class.
-	 * Please note that you should have this exact method in all your CActiveRecord descendants!
-	 * @param string $className active record class name.
-	 * @return DisqusComments the static model class
-	 */
-	public static function model($className=__CLASS__)
-	{
-		return parent::model($className);
-	}
+    /**
+     * Returns the static model of the specified AR class.
+     * Please note that you should have this exact method in all your CActiveRecord descendants!
+     * @param string $className active record class name.
+     * @return DisqusComments the static model class
+     */
+    public static function model($className = __CLASS__)
+    {
+        return parent::model($className);
+    }
 
     public static function saveNewUrl($url)
     {
@@ -111,13 +111,11 @@ class DisqusComments extends CActiveRecord
         $commentsPage = self::model()->findByAttributes(array(
             'page_url' => $url
         ));
-        if(!isset($commentsPage) && $createIfNotExist)
-        {
+        if (!isset($commentsPage) && $createIfNotExist) {
             $commentsPage = new self();
             $commentsPage->page_url = $url;
         }
-        if(isset($scenario))
-        {
+        if (isset($scenario)) {
             $commentsPage->scenario = $scenario;
         }
         return $commentsPage;

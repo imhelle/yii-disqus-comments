@@ -19,6 +19,7 @@ class m150315_105154_disqus_comments extends CDbMigration
     public function safeDown()
     {
         $this->dropIndex('disqus_comments_page_url', 'disqus_comments');
+        $this->dropIndex('disqus_comments_update_time', 'disqus_comments');
         $this->dropTable('disqus_comments');
     }
 

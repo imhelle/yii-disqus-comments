@@ -7,7 +7,8 @@
  * @property integer $commentsLimit
  * @property bool $autoUpdateMap
  */
-class EDisqusComments extends CApplicationComponent {
+class EDisqusComments extends CApplicationComponent
+{
 
     /* Count of comments that we want to receive from API for one request. max = 100*/
     public $commentsLimit = 100;
@@ -32,9 +33,9 @@ class EDisqusComments extends CApplicationComponent {
 
     public function init()
     {
-        Yii::import('ext.DisqusComments.models.*');
-        Yii::import('ext.DisqusComments.helpers.*');
-        Yii::import('ext.DisqusComments.actions.*');
+        Yii::import('application.vendor.yii-disqus-comments.DisqusComments.models.*');
+        Yii::import('application.vendor.yii-disqus-comments.DisqusComments.helpers.*');
+        Yii::import('application.vendor.yii-disqus-comments.DisqusComments.actions.*');
         parent::init();
     }
 
@@ -52,15 +53,13 @@ class EDisqusComments extends CApplicationComponent {
         $disqusApiUrl .= '&limit=' . $this->commentsLimit;
         $disqusApiUrl .= '&order=desc';
         $disqusApiUrl .= '&thread:link=' . $pageUrl;
-        if(isset($cursor))
-        {
+        if (isset($cursor)) {
             $disqusApiUrl .= '&cursor=' . $cursor;
         }
         $decodedData = self::sendRequest($disqusApiUrl);
         $result = $decodedData->response;
 
-        if($decodedData->cursor->hasNext)
-        {
+        if ($decodedData->cursor->hasNext) {
             $result = array_merge($result, $this->loadCommentsByUrl($pageUrl, $decodedData->cursor->next));
         }
         return $result;
@@ -77,22 +76,18 @@ class EDisqusComments extends CApplicationComponent {
         $disqusApiUrl .= '?api_key=' . $this->apiKey;
         $disqusApiUrl .= '&forum=' . $this->shortName;
         $disqusApiUrl .= '&limit=' . $this->commentsLimit;
-        if(isset($cursor))
-        {
+        if (isset($cursor)) {
             $disqusApiUrl .= '&cursor=' . $cursor;
         }
 
         $data = self::sendRequest($disqusApiUrl);
         $result = array();
-        if(is_array($data->response) && !empty($data->response))
-        {
-            foreach($data->response as $threadFromApi)
-            {
+        if (is_array($data->response) && !empty($data->response)) {
+            foreach ($data->response as $threadFromApi) {
                 $result[] = $threadFromApi->link;
             }
         }
-        if($data->cursor->hasNext)
-        {
+        if ($data->cursor->hasNext) {
             $result = array_merge($result, $this->loadUrls($data->cursor->next));
         }
         return $result;
@@ -111,22 +106,18 @@ class EDisqusComments extends CApplicationComponent {
         $disqusApiUrl .= '&forum=' . $this->shortName;
         $disqusApiUrl .= '&limit=' . $this->commentsLimit;
         $disqusApiUrl .= '&interval=' . $interval;
-        if(isset($cursor))
-        {
+        if (isset($cursor)) {
             $disqusApiUrl .= '&cursor=' . $cursor;
         }
         $data = self::sendRequest($disqusApiUrl);
         $result = array();
-        if(is_array($data->response) && !empty($data->response))
-        {
-            foreach($data->response as $threadFromApi)
-            {
+        if (is_array($data->response) && !empty($data->response)) {
+            foreach ($data->response as $threadFromApi) {
                 $result[] = $threadFromApi->link;
             }
         }
 
-        if($data->cursor->hasNext)
-        {
+        if ($data->cursor->hasNext) {
             $result = array_merge($result, $this->loadRecentThreads($interval, $data->cursor->next));
         }
         return $result;
@@ -140,8 +131,8 @@ class EDisqusComments extends CApplicationComponent {
     public function getCache($id)
     {
         $value = false;
-        if($this->cacheId !== false && ($cache = Yii::app()->getComponent($this->cacheId)) !== null)
-        {   /** @var CCache $cache */
+        if ($this->cacheId !== false && ($cache = Yii::app()->getComponent($this->cacheId)) !== null) {
+            /** @var CCache $cache */
             $value = $cache->get($id);
         }
         return $value;
@@ -154,8 +145,8 @@ class EDisqusComments extends CApplicationComponent {
      */
     public function setCache($id, $value)
     {
-        if($this->cacheId !== false && ($cache = Yii::app()->getComponent($this->cacheId)) !== null)
-        {   /** @var CCache $cache */
+        if ($this->cacheId !== false && ($cache = Yii::app()->getComponent($this->cacheId)) !== null) {
+            /** @var CCache $cache */
             $dependency = new \CGlobalStateCacheDependency('DisqusComments');
             $cache->set($id, $value, $this->cacheDuration, $dependency);
         }
@@ -169,8 +160,7 @@ class EDisqusComments extends CApplicationComponent {
     public static function createCommentsHTML($comments)
     {
         $commentsHTML = CHtml::openTag('ul');
-        foreach($comments as $comment)
-        {
+        foreach ($comments as $comment) {
             $commentsHTML .= CHtml::openTag('li');
             $commentsHTML .= CHtml::tag('span', array(), $comment->author);
             $commentsHTML .= $comment->text;
@@ -183,8 +173,7 @@ class EDisqusComments extends CApplicationComponent {
     public static function createCommentsJSON($comments)
     {
         $commentsForJSON = array();
-        foreach($comments as $comment)
-        {
+        foreach ($comments as $comment) {
             $commentsForJSON[] = array(
                 'author' => $comment->author,
                 'date' => $comment->date,
@@ -199,11 +188,11 @@ class EDisqusComments extends CApplicationComponent {
      * @param integer $parentId
      * @return array
      */
-    public static function sortCommentsByHierarchy($comments, $parentId = null) {
+    public static function sortCommentsByHierarchy($comments, $parentId = null)
+    {
         $sortedComments = array();
-        foreach($comments as $comment) {
-            if($comment->parent == $parentId)
-            {
+        foreach ($comments as $comment) {
+            if ($comment->parent == $parentId) {
                 $sortedComments[] = $comment;
                 $sortedComments = array_merge($sortedComments, self::sortCommentsByHierarchy($comments, (integer)$comment->id));
             }
@@ -216,10 +205,10 @@ class EDisqusComments extends CApplicationComponent {
      * @param stdClass[] $commentsFromApi
      * @return stdClass[]
      */
-    public static function formatComments($commentsFromApi) {
+    public static function formatComments($commentsFromApi)
+    {
         $comments = array();
-        foreach($commentsFromApi as $commentFromApi)
-        {
+        foreach ($commentsFromApi as $commentFromApi) {
             $comment = new stdClass();
             $comment->author = $commentFromApi->author->username;
             $comment->date = self::formatDate($commentFromApi->createdAt);

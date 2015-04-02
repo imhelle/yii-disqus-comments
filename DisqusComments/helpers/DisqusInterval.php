@@ -1,10 +1,11 @@
 <?php
+
 /**
  * Class DisqusInterval
  * Getting URLs for pages with comments using urlMap in CSV format
  */
-
-class DisqusInterval {
+class DisqusInterval
+{
 
     /* Constants for Disqus API intervals */
     const INTERVAL_HOUR = '1h';
@@ -36,12 +37,10 @@ class DisqusInterval {
     public static function getIntervalBySeconds($seconds)
     {
         $result = self::INTERVAL_TWENTY_HOURS;
-        if((integer)$seconds > 0)
-        {
-            foreach(self::$intervalsInSeconds as $interval => $countSeconds)
-            {
+        if ((integer)$seconds > 0) {
+            foreach (self::$intervalsInSeconds as $interval => $countSeconds) {
                 $result = $interval;
-                if((integer)$seconds <= $countSeconds) {
+                if ((integer)$seconds <= $countSeconds) {
                     break;
                 }
             }
