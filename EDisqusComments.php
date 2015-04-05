@@ -33,9 +33,10 @@ class EDisqusComments extends CApplicationComponent
 
     public function init()
     {
-        Yii::import('application.vendor.yii-disqus-comments.DisqusComments.models.*');
-        Yii::import('application.vendor.yii-disqus-comments.DisqusComments.helpers.*');
-        Yii::import('application.vendor.yii-disqus-comments.DisqusComments.actions.*');
+        Yii::setPathOfAlias('disqusComments', dirname(__FILE__));
+        Yii::import('disqusComments.models.*');
+        Yii::import('disqusComments.helpers.*');
+        Yii::import('disqusComments.actions.*');
         parent::init();
     }
 
@@ -159,14 +160,17 @@ class EDisqusComments extends CApplicationComponent
      */
     public static function createCommentsHTML($comments)
     {
-        $commentsHTML = CHtml::openTag('ul');
-        foreach ($comments as $comment) {
-            $commentsHTML .= CHtml::openTag('li');
-            $commentsHTML .= CHtml::tag('span', array(), $comment->author);
-            $commentsHTML .= $comment->text;
-            $commentsHTML .= CHtml::closeTag('li');
+        $commentsHTML = '';
+        if(is_array($comments)) {
+            $commentsHTML = CHtml::openTag('ul');
+            foreach ($comments as $comment) {
+                $commentsHTML .= CHtml::openTag('li');
+                $commentsHTML .= CHtml::tag('span', array(), $comment->author);
+                $commentsHTML .= $comment->text;
+                $commentsHTML .= CHtml::closeTag('li');
+            }
+            $commentsHTML .= CHtml::closeTag('ul');
         }
-        $commentsHTML .= CHtml::closeTag('ul');
         return $commentsHTML;
     }
 

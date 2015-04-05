@@ -1,0 +1,10 @@
+{
+    "name": "imhelle/yii-disqus-comments",
+    "description": "Extension for adding synchronizable Disqus comments for Yii application",
+    "authors": [
+        {
+            "name": "Olga Spiridonova",
+            "email": "sp.olga.inf@gmail.com"
+        }
+    ]
+}
