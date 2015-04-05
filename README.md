@@ -4,7 +4,12 @@ Provides to use Disqus comments widget and synchronize comments from Disqus to y
 
 ## Installation
 
-Clone or extract the DisqusComments folder from archive under protected/extensions of your Yii application.
+To install via composer require the package in your composer.json:
+```
+"imhelle/yii-disqus-comments": "dev-master"
+```
+
+Also you can just clone project or extract the archive under protected/extensions of your Yii application.
 
 ## Configuration
 Extension need to be added in your application and console config as a component:
@@ -12,7 +17,7 @@ Extension need to be added in your application and console config as a component
 'components' => array(
         ...
         'disqusComments' => array(
-            'class' => 'ext.DisqusComments.components.EDisqusComments',
+            'class' => 'application.vendor.imhelle.yii-disqus-comments.EDisqusComments', // or "ext.yii-disqus-comments.EDisqusComments" if you install it in extension folder.
             'apiKey' => 'YOUR_API_KEY',
             'shortName' => 'YOUR_SHORT_NAME'
         ),
@@ -26,23 +31,23 @@ For easy use a synchronization console commands you can add it to your commandMa
 ```php
 'commandMap' => array(
         'update_disqus_comments' => array(
-            'class' => 'ext.DisqusComments.commands.UpdateDisqusComments'
+            'class' => 'application.vendor.imhelle.yii-disqus-comments.commands.UpdateDisqusComments'
         ),
         'update_url_map' => array(
-            'class' => 'ext.DisqusComments.commands.UpdateUrlMap'
+            'class' => 'application.vendor.imhelle.yii-disqus-comments.commands.UpdateUrlMap'
         ),
     ),
 ```
 Apply the migration to create table for storing synchronized comments:
 ```
-php yiic.php migrate --migrationPath=ext.DisqusComments.migrations
+php yiic.php migrate --migrationPath=application.vendor.imhelle.yii-disqus-comments.migrations
 ```
 Extension provides to use cache for widget.
 You can set your Id of cache component you use. 
 ```php
 'components' => array(
         'disqusComments' => array(
-            'class' => 'ext.DisqusComments.components.EDisqusComments',
+            'class' => 'application.vendor.imhelle.yii-disqus-comments.EDisqusComments',
             'apiKey' => 'YOUR_API_KEY',
             'shortName' => 'YOUR_SHORT_NAME',
             'cacheId' = 'cache' // you can set it here
@@ -52,7 +57,7 @@ You can set your Id of cache component you use.
 ## Base Usage
 Add this widget to pages that you want add comments
 ```php
-<?php $this->widget('ext.DisqusComments.widgets.DisqusCommentsWidget', array('pageUrl' => $pageUrl)); ?>
+<?php $this->widget('disqusComments.widgets.DisqusCommentsWidget', array('pageUrl' => $pageUrl)); ?>
 ```
 This widget can receive an URL for current website page. It needed for getting synchronized comments from DB.
 
@@ -85,7 +90,7 @@ Extension also provides to update URLs in database automatically. If you set a $
 ```php
 'components' => array(
         'disqusComments' => array(
-            'class' => 'ext.DisqusComments.components.EDisqusComments',
+            'class' => 'application.vendor.imhelle.yii-disqus-comments.EDisqusComments',
             'apiKey' => 'YOUR_API_KEY',
             'shortName' => 'YOUR_SHORT_NAME',
             'autoUpdateMap' = true // this one
