@@ -1,6 +1,6 @@
 # yii-disqus-comments
-Extension for adding Disqus comments (https://disqus.com) for Yii application.
-Provides to use Disqus comments widget and synchronize comments from Disqus to your database (it can be useful for indexing comments by Google).
+Extension for adding Disqus comments (https://disqus.com) to Yii application.
+Provides to use Disqus comments widget and synchronization your comments from Disqus to your database (it can be useful for indexing comments by Google).
 
 ## Installation
 
@@ -9,10 +9,10 @@ To install via composer require the package in your composer.json:
 "imhelle/yii-disqus-comments": "dev-master"
 ```
 
-Also you can just clone project or extract the archive under protected/extensions of your Yii application.
+Also you can just clone project or extract the archive under protected/extensions directory in your Yii application.
 
 ## Configuration
-Extension need to be added in your application and console config as a component:
+Extension need to be added in your application and console configs as a component:
 ```php
 'components' => array(
         ...
@@ -23,9 +23,9 @@ Extension need to be added in your application and console config as a component
         ),
         ...
 ```
-The shortname is a specified name for your site that you will get by registering it on https://disqus.com/admin/create/
+The shortname is a specified name for your site that you should get after registering on https://disqus.com/admin/create/
 
-The API Key you can receive by registering your application on https://disqus.com/api/applications/, it is required for using Disqus Api
+The API Key you'll receive by registering your application on https://disqus.com/api/applications/, it's required for using Disqus Api.
 
 For easy use a synchronization console commands you can add it to your commandMap in console config:
 ```php
@@ -42,7 +42,7 @@ Apply the migration to create table for storing synchronized comments:
 ```
 php yiic.php migrate --migrationPath=application.vendor.imhelle.yii-disqus-comments.migrations
 ```
-Extension provides to use cache for widget.
+Extension provides the cache usage for widget.
 You can set your Id of cache component you use. 
 ```php
 'components' => array(
@@ -55,11 +55,11 @@ You can set your Id of cache component you use.
 ```
 
 ## Base Usage
-Add this widget to pages that you want add comments
+Add this widget to the views to get the Disqus comments there:
 ```php
 <?php $this->widget('disqusComments.widgets.DisqusCommentsWidget', array('pageUrl' => $pageUrl)); ?>
 ```
-This widget can receive an URL for current website page. It needed for getting synchronized comments from DB.
+This widget can receive an URL for current website page. It's necessary for getting synchronized comments from DB.
 
 Extension has console command for synchronize comments from Disqus.
 
@@ -86,7 +86,7 @@ Also you can download the map in CSV format from Discus administration panel on 
  php yiic.php update_url_map fromCSV --filePath='PATH_TO_YOUR_FILE'
 ```
 
-Extension also provides to update URLs in database automatically. If you set a $autoUpdateMap parameter as true, extension will synchronize every URL for page using Discus to your comments table.
+Extension also provides the automatic updating URLs in the database. If you set a $autoUpdateMap parameter as true, extension will synchronize the Disqus comments, when the widget is loaded.
 ```php
 'components' => array(
         'disqusComments' => array(
